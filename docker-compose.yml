@@ -15,23 +15,37 @@ services:
       traefik.http.routers.api.service: api@internal # Enable Traefik API.
       traefik.enable: true # Enable Traefik reverse proxy for the Traefik dashboard.
 
-  server1:
-    container_name: server1
+  backend1:
+    container_name: backend1
     build:
       context: ./
       dockerfile: Dockerfile
-    command: --server-id 1
+    command: --role backend --server-id 1
 
-  server2:
-    container_name: server2
+  backend2:
+    container_name: backend2
     build:
       context: ./
       dockerfile: Dockerfile
-    command: --server-id 2
+    command: --role backend --server-id 2
 
-  server3:
-    container_name: server3
+  backend3:
+    container_name: backend3
     build:
       context: ./
       dockerfile: Dockerfile
-    command: --server-id 3
+    command: --role backend --server-id 3
+
+  frontend1:
+    container_name: frontend1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: --role frontend --server-id 1
+
+  frontend2:
+    container_name: frontend2
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: --role frontend --server-id 2

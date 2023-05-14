@@ -4,18 +4,48 @@ http:
     # Define a connection between requests and services
     to-backend:
       rule: "PathPrefix(`/backend/`)"
-      # If the rule matches, forward to the whoami service (declared below)
       service: backend
+      middlewares:
+        - routing-stripPrefix
+    to-frontend:
+      rule: "PathPrefix(`/frontend/`)"
+      service: frontend
+      middlewares:
+        - routing-stripPrefix
+
+  middlewares:
+    routing-stripPrefix:
+      stripPrefix:
+        prefixes:
+          - "/backend"
+          - "/frontend"
 
   services:
     # Define how to reach an existing service on our infrastructure
     backend:
+      loadBalancer:
+        # if the client provides this cookie in the request, they are routed to the same server that handled it before.
+        sticky:
+          cookie:
+            name: backend_sticky_cookie
+            secure: true
+            httpOnly: true
+        # monitor load of the servers.
+        healthCheck:
+          path: /health
+          interval: "10s"
+          timeout: "3s"
+        servers:
+          - url: http://backend1:1234
+          - url: http://backend2:1234
+          - url: http://backend3:1234
+
+    frontend:
       loadBalancer:
         healthCheck:
           path: /health
           interval: "10s"
           timeout: "3s"
         servers:
-          - url: http://server1:1234
-          - url: http://server2:1234
-          - url: http://server3:1234
+          - url: http://frontend1:1234
+          - url: http://frontend2:1234
