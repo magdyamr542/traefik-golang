@@ -1,0 +1,23 @@
+global:
+  checkNewVersion: true
+
+entryPoints:
+  web:
+    address: ":5000"
+    transport:
+      respondingTimeouts:
+        readTimeout: "5"
+        writeTimeout: "5"
+
+api:
+  dashboard: true
+  insecure: true
+
+log:
+  level: DEBUG
+
+accessLog: {}
+
+providers:
+  file:
+    filename: /etc/traefik/traefik.providers.yml

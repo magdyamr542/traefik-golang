@@ -1,0 +1,21 @@
+# http routing section
+http:
+  routers:
+    # Define a connection between requests and services
+    to-backend:
+      rule: "PathPrefix(`/backend/`)"
+      # If the rule matches, forward to the whoami service (declared below)
+      service: backend
+
+  services:
+    # Define how to reach an existing service on our infrastructure
+    backend:
+      loadBalancer:
+        healthCheck:
+          path: /health
+          interval: "10s"
+          timeout: "3s"
+        servers:
+          - url: http://server1:1234
+          - url: http://server2:1234
+          - url: http://server3:1234

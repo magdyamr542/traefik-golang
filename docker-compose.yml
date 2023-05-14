@@ -1,0 +1,37 @@
+version: "3"
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:latest
+    ports:
+      - 5000:5000
+      - 8080:8080
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # ro = read-only access to the docker.sock
+      - ./traefik:/etc/traefik/
+    labels:
+      traefik.http.routers.api.rule: Host(`traefik.YOURDOMAIN.COM`) # Define the subdomain for the traefik dashboard.
+      traefik.http.routers.api.service: api@internal # Enable Traefik API.
+      traefik.enable: true # Enable Traefik reverse proxy for the Traefik dashboard.
+
+  server1:
+    container_name: server1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: --server-id 1
+
+  server2:
+    container_name: server2
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: --server-id 2
+
+  server3:
+    container_name: server3
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: --server-id 3
