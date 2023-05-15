@@ -7,6 +7,7 @@ http:
       service: backend
       middlewares:
         - with-strip-prefix
+        - with-ratelimiting
 
     to-backend-basic-auth:
       rule: "PathPrefix(`/backend/`) && Method(`POST`)"
@@ -33,6 +34,12 @@ http:
       basicAuth:
         users:
           - "user:$2a$12$wmm9X7OPcsWpgsmMTzxnQOpAQJPyf4a2XNBY6eNHTvYkdshHJmb1S" # password is generate by bcrypt. password is "password"
+
+    with-ratelimiting:
+      rateLimit:
+        average: 10 # 10 req. per min
+        period: "1m"
+        burst: 10
 
   # Services
   services:
