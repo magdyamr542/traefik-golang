@@ -1,25 +1,40 @@
-# http routing section
 http:
+  # Routers
   routers:
     # Define a connection between requests and services
     to-backend:
       rule: "PathPrefix(`/backend/`)"
       service: backend
       middlewares:
-        - routing-stripPrefix
+        - with-strip-prefix
+
+    to-backend-basic-auth:
+      rule: "PathPrefix(`/backend/`) && Method(`POST`)"
+      service: backend
+      middlewares:
+        - with-strip-prefix
+        - with-basic-auth
+
     to-frontend:
       rule: "PathPrefix(`/frontend/`)"
       service: frontend
       middlewares:
-        - routing-stripPrefix
+        - with-strip-prefix
 
+  # Middlewares
   middlewares:
-    routing-stripPrefix:
+    with-strip-prefix:
       stripPrefix:
         prefixes:
           - "/backend"
           - "/frontend"
 
+    with-basic-auth:
+      basicAuth:
+        users:
+          - "user:$2a$12$wmm9X7OPcsWpgsmMTzxnQOpAQJPyf4a2XNBY6eNHTvYkdshHJmb1S" # password is generate by bcrypt. password is "password"
+
+  # Services
   services:
     # Define how to reach an existing service on our infrastructure
     backend:
