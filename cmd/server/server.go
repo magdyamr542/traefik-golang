@@ -26,7 +26,7 @@ func main() {
 	serverName := fmt.Sprintf("%s-%s", *role, *server)
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Got new %s request at %s\n", r.Method, serverName)
-		fmt.Fprintf(w, "Pong from %s\n", serverName)
+		fmt.Fprintf(w, "Pong from %s", serverName)
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {

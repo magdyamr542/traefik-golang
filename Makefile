@@ -13,6 +13,9 @@ frontend1:
 frontend2:
 	go run cmd/server/server.go --role frontend --server-id 2 --port 1238
 
+tls_client:
+	go run cmd/tls_client/tls_client.go --endpoint https://localhost:5000/backend/ping
+
 
 # TLS and certificates 
 ca:
@@ -29,11 +32,11 @@ serverkey:
 	# Create a server certificate by signing the CSR with the CA:
 	cd tls && openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -extensions reqexts -extfile san.cnf
 
-# clientkey:
-# 	# Generate a private key for the client:
-# 	openssl genpkey -algorithm RSA -out client.key
-# 	# Create a certificate signing request (CSR) for the client:
-# 	openssl req -new -key client.key -out client.csr
-# 	# Create a client certificate by signing the CSR with the CA:
-# 	openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt
+clientkey:
+	# Generate a private key for the client:
+	cd tls && openssl genpkey -algorithm RSA -out client.key
+	# Create a certificate signing request (CSR) for the client:
+	cd tls && openssl req -new -key client.key -out client.csr
+	# Create a client certificate by signing the CSR with the CA:
+	cd tls && openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt
 
