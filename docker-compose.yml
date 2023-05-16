@@ -10,6 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # ro = read-only access to the docker.sock
       - ./traefik:/etc/traefik/
+      - ./tls:/etc/traefik/tls
     labels:
       traefik.http.routers.api.rule: Host(`traefik.YOURDOMAIN.COM`) # Define the subdomain for the traefik dashboard.
       traefik.http.routers.api.service: api@internal # Enable Traefik API.
@@ -21,6 +22,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     command: --role backend --server-id 1
+    profiles: ["backend"]
 
   backend2:
     container_name: backend2
@@ -28,6 +30,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     command: --role backend --server-id 2
+    profiles: ["backend"]
 
   backend3:
     container_name: backend3
@@ -35,6 +38,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     command: --role backend --server-id 3
+    profiles: ["backend"]
 
   frontend1:
     container_name: frontend1
@@ -42,6 +46,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     command: --role frontend --server-id 1
+    profiles: ["frontend"]
 
   frontend2:
     container_name: frontend2
@@ -49,3 +54,4 @@ services:
       context: ./
       dockerfile: Dockerfile
     command: --role frontend --server-id 2
+    profiles: ["frontend"]

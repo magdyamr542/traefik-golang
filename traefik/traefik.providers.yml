@@ -16,6 +16,13 @@ http:
         - with-strip-prefix
         - with-basic-auth
 
+    to-backend-tls:
+      rule: "PathPrefix(`/backend/`)"
+      service: backend
+      middlewares:
+        - with-strip-prefix
+      tls: {}
+
     to-frontend:
       rule: "PathPrefix(`/frontend/`)"
       service: frontend
@@ -71,3 +78,11 @@ http:
         servers:
           - url: http://frontend1:1234
           - url: http://frontend2:1234
+
+# The client needs to trust the CA (certificate authority) which signed the certificate of the server
+# Using curl as client: curl --cacert <path to ca.crt> https://localhost:5000/backend/ping
+# Using chrome as client: Configure chrome to trust the CA. (Settings -> Security -> Manager Certificates -> Authorities)
+tls:
+  certificates:
+    - certFile: /etc/traefik/tls/server.crt
+      keyFile: /etc/traefik/tls/server.key
